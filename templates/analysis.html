@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Relation Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Student Relationship Analyzer
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Dashboard</a>
+
+        <a href="/students">
+            Students
+        </a>
+
+        <a href="/relations">
+            Relations
+        </a>
+
+        <a href="/analysis">
+            Analysis
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>Relation Analyzer</h1>
+
+        <p>
+            Analyze the mathematical properties of a student relation.
+        </p>
+
+    </section>
+
+
+    <!-- Select Relation -->
+
+    <section class="student-form">
+
+        <h2>Select Relation</h2>
+
+        {% if relation_types %}
+
+        <form action="/analyze_relation"
+              method="POST">
+
+            <select name="relation_type" required>
+
+                <option value="">
+                    Select Relation
+                </option>
+
+                {% for relation in relation_types %}
+
+                <option
+                    value="{{ relation.relation_type }}"
+                    {% if selected_relation == relation.relation_type %}
+                    selected
+                    {% endif %}
+                >
+                    {{ relation.relation_type }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                Analyze Relation
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <p class="empty">
+            No relationships are available for analysis.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    {% if selected_relation %}
+
+    <!-- Result -->
+
+    <section class="analysis-result">
+
+        <div class="analysis-header">
+
+            <h2>
+                {{ selected_relation }} Relation
+            </h2>
+
+            <p>
+                Total ordered pairs:
+                <strong>{{ relation_count }}</strong>
+            </p>
+
+        </div>
+
+
+        <div class="analysis-grid">
+
+
+            <!-- Reflexive -->
+
+            <div class="analysis-card">
+
+                <h3>Reflexive</h3>
+
+                {% if reflexive %}
+
+                <div class="result yes">
+                    ✓ YES
+                </div>
+
+                <p>
+                    Every student is related to themselves.
+                </p>
+
+                {% else %}
+
+                <div class="result no">
+                    ✗ NO
+                </div>
+
+                <p>
+                    At least one student is not related to themselves.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Symmetric -->
+
+            <div class="analysis-card">
+
+                <h3>Symmetric</h3>
+
+                {% if symmetric %}
+
+                <div class="result yes">
+                    ✓ YES
+                </div>
+
+                <p>
+                    If A is related to B, B is also related to A.
+                </p>
+
+                {% else %}
+
+                <div class="result no">
+                    ✗ NO
+                </div>
+
+                <p>
+                    At least one reverse relationship is missing.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Antisymmetric -->
+
+            <div class="analysis-card">
+
+                <h3>Antisymmetric</h3>
+
+                {% if antisymmetric %}
+
+                <div class="result yes">
+                    ✓ YES
+                </div>
+
+                <p>
+                    Two different students cannot have relationships
+                    in both directions.
+                </p>
+
+                {% else %}
+
+                <div class="result no">
+                    ✗ NO
+                </div>
+
+                <p>
+                    Two different students have relationships
+                    in both directions.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Transitive -->
+
+            <div class="analysis-card">
+
+                <h3>Transitive</h3>
+
+                {% if transitive %}
+
+                <div class="result yes">
+                    ✓ YES
+                </div>
+
+                <p>
+                    If A → B and B → C, then A → C exists.
+                </p>
+
+                {% else %}
+
+                <div class="result no">
+                    ✗ NO
+                </div>
+
+                <p>
+                    At least one required indirect relationship
+                    is missing.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Special Relations -->
+
+        <div class="special-results">
+
+            <h2>Relation Classification</h2>
+
+
+            {% if equivalence %}
+
+            <div class="classification success">
+
+                ✓ Equivalence Relation
+
+                <span>
+                    Reflexive + Symmetric + Transitive
+                </span>
+
+            </div>
+
+            {% else %}
+
+            <div class="classification">
+
+                ✗ Not an Equivalence Relation
+
+            </div>
+
+            {% endif %}
+
+
+            {% if partial_order %}
+
+            <div class="classification success">
+
+                ✓ Partial Order
+
+                <span>
+                    Reflexive + Antisymmetric + Transitive
+                </span>
+
+            </div>
+
+            {% else %}
+
+            <div class="classification">
+
+                ✗ Not a Partial Order
+
+            </div>
+
+            {% endif %}
+
+        </div>
+        <!-- Relation Matrix -->
+
+<div class="matrix-section">
+
+    <h2>Relation Matrix</h2>
+
+    <p class="matrix-description">
+        The matrix represents the selected relation between students.
+        1 indicates that a relation exists and 0 indicates that it does not.
+    </p>
+
+    <div class="matrix-container">
+
+        <table class="relation-matrix">
+
+            <thead>
+
+                <tr>
+
+                    <th>R</th>
+
+                    {% for student in students %}
+
+                    <th>
+                        {{ student.name }}
+                    </th>
+
+                    {% endfor %}
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in matrix %}
+
+                <tr>
+
+                    <th>
+                        {{ students[loop.index0].name }}
+                    </th>
+
+                    {% for value in row %}
+
+                    <td
+                        class="{% if value == 1 %}matrix-one{% else %}matrix-zero{% endif %}"
+                    >
+                        {{ value }}
+                    </td>
+
+                    {% endfor %}
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+    </section>
+
+    {% endif %}
+
+</main>
+
+</body>
+
+</html>

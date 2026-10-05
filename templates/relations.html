@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Relations - Student Relationship Analyzer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Student Relationship Analyzer
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Dashboard</a>
+
+        <a href="/students">
+            Students
+        </a>
+
+        <a href="/relations">
+            Relations
+        </a>
+
+        <a href="/analysis">
+            Analysis
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>Relationship Management</h1>
+
+        <p>
+            Define relationships between students.
+        </p>
+
+    </section>
+
+
+    <!-- Add Relation -->
+
+    <section class="student-form">
+
+        <h2>Add Relationship</h2>
+
+        {% if students|length >= 2 %}
+
+        <form action="/add_relation"
+              method="POST">
+
+            <!-- Student 1 -->
+
+            <select name="student1" required>
+
+                <option value="">
+                    Select Student
+                </option>
+
+                {% for student in students %}
+
+                <option value="{{ student.id }}">
+                    {{ student.name }}
+                    - {{ student.branch }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- Relationship -->
+
+            <select name="relation_type" required>
+
+                <option value="">
+                    Select Relationship
+                </option>
+
+                <option value="Friend">
+                    Friend
+                </option>
+
+                <option value="Classmate">
+                    Classmate
+                </option>
+
+                <option value="Project Partner">
+                    Project Partner
+                </option>
+
+                <option value="Study Partner">
+                    Study Partner
+                </option>
+
+                <option value="Team Member">
+                    Team Member
+                </option>
+
+            </select>
+
+
+            <!-- Student 2 -->
+
+            <select name="student2" required>
+
+                <option value="">
+                    Select Student
+                </option>
+
+                {% for student in students %}
+
+                <option value="{{ student.id }}">
+                    {{ student.name }}
+                    - {{ student.branch }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button type="submit">
+                Add Relation
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <p class="empty">
+            Add at least two students before creating a relationship.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Relations -->
+
+    <section class="student-list">
+
+        <h2>Existing Relationships</h2>
+
+        {% if relations %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Student 1</th>
+
+                    <th>Relationship</th>
+
+                    <th>Student 2</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for relation in relations %}
+
+                <tr>
+
+                    <td>
+                        {{ relation.id }}
+                    </td>
+
+                    <td>
+                        {{ relation.student1 }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ relation.relation_type }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ relation.student2 }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="/delete_relation/{{ relation.id }}"
+                            class="delete-btn"
+                            onclick="return confirm('Delete this relationship?')"
+                        >
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <p class="empty">
+            No relationships added yet.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Students - Student Relationship Analyzer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Student Relationship Analyzer
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Dashboard</a>
+
+        <a href="/students">
+            Students
+        </a>
+
+        <a href="/relations">
+            Relations
+        </a>
+
+        <a href="/analysis">
+            Analysis
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>Student Management</h1>
+
+        <p>
+            Add and manage students in the system.
+        </p>
+
+    </section>
+
+
+    <!-- Add Student -->
+
+    <section class="student-form">
+
+        <h2>Add Student</h2>
+
+        <form action="/add_student"
+              method="POST">
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Student Name"
+                required
+            >
+
+            <input
+                type="text"
+                name="branch"
+                placeholder="Branch"
+                required
+            >
+
+            <input
+                type="number"
+                name="year"
+                placeholder="Year"
+                min="1"
+                max="6"
+                required
+            >
+
+            <button type="submit">
+                Add Student
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Students Table -->
+
+    <section class="student-list">
+
+        <h2>All Students</h2>
+
+        {% if students %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Branch</th>
+                    <th>Year</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for student in students %}
+
+                <tr>
+
+                    <td>
+                        {{ student.id }}
+                    </td>
+
+                    <td>
+                        {{ student.name }}
+                    </td>
+
+                    <td>
+                        {{ student.branch }}
+                    </td>
+
+                    <td>
+                        {{ student.year }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="/delete_student/{{ student.id }}"
+                            class="delete-btn"
+                            onclick="return confirm('Delete this student?')"
+                        >
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <p class="empty">
+            No students added yet.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

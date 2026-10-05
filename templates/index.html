@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Student Relationship Analyzer</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="logo">Student Relationship Analyzer</div>
+
+      <div class="nav-links">
+        <a href="/">Dashboard</a>
+        <a href="/students">Students</a>
+        <a href="/relations">Relations</a>
+        <a href="/analysis">Analysis</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="hero">
+        <h1>Student Relationship Analyzer</h1>
+
+        <p>
+          Analyze relationships between students using mathematical relations.
+        </p>
+      </section>
+
+      <section class="cards">
+        <div class="card">
+          <h2>Students</h2>
+          <p class="number">{{ student_count }}</p>
+          <span>Total Students</span>
+        </div>
+
+        <div class="card">
+          <h2>Relations</h2>
+          <p class="number">{{ relation_count }}</p>
+          <span>Total Relations</span>
+        </div>
+
+        <div class="card">
+          <h2>Analysis</h2>
+          <p class="number">0</p>
+          <span>Relations Analyzed</span>
+        </div>
+      </section>
+
+      <section class="info">
+        <h2>What can this system analyze?</h2>
+
+        <div class="features">
+          <div>
+            <h3>Reflexive</h3>
+            <p>Checks whether every student is related to themselves.</p>
+          </div>
+
+          <div>
+            <h3>Symmetric</h3>
+            <p>Checks whether the relationship works in both directions.</p>
+          </div>
+
+          <div>
+            <h3>Transitive</h3>
+            <p>Checks whether relationships can be logically extended.</p>
+          </div>
+
+          <div>
+            <h3>Equivalence</h3>
+            <p>
+              Determines whether the relation satisfies all required properties.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
